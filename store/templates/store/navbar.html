@@ -1,0 +1,139 @@
+<!-- templates/store/navbar.html -->
+{% load static %}
+
+<nav class="navbar">
+
+    <!-- LEFT BRAND -->
+    <div class="nav-left">
+        <a class="brand" href="{% url 'home' %}">
+            <i class="fas fa-tractor"></i> AgriMart
+        </a>
+    </div>
+
+    <!-- CENTER NAV MENU -->
+    <ul class="nav-center" id="nav-center">
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="{% url 'category' 'seeds' %}">Seeds</a></li>
+
+        <li class="dropdown">
+            <a href="{% url 'category' 'pesticides' %}">Pesticides</a>
+            <ul class="dropdown-menu">
+                <li><a href="{% url 'subcategory' 'pesticides' 'insecticides' %}">Insecticides</a></li>
+                <li><a href="{% url 'subcategory' 'pesticides' 'herbicides' %}">Herbicides</a></li>
+                <li><a href="{% url 'subcategory' 'pesticides' 'fungicides' %}">Fungicides</a></li>
+                <li><a href="{% url 'subcategory' 'pesticides' 'rodenticides' %}">Rodenticides</a></li>
+                <li><a href="{% url 'subcategory' 'pesticides' 'bactericides' %}">Bactericides</a></li>
+                <li><a href="{% url 'subcategory' 'pesticides' 'nematicides' %}">Nematicides</a></li>
+            </ul>
+        </li>
+
+        <li><a href="{% url 'category' 'tools' %}">Tools</a></li>
+        <li><a href="{% url 'category' 'machines' %}">Machines</a></li>
+        <li><a href="#">AI Detection</a></li>
+    </ul>
+
+    <!-- RIGHT SIDE -->
+    <div class="nav-right">
+        <form action="{% url 'search' %}" method="GET" class="search-box">
+            <input type="text" name="q" placeholder="Search..." autocomplete="off">
+            <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </form>
+
+        <a href="{% url 'wishlist' %}" class="wishlist-icon">
+            <i class="fa-solid fa-heart"></i>
+            <span id="wishlist-count">{{ wishlist_count|default:0 }}</span>
+        </a>
+
+        <a href="{% url 'cart' %}" class="cart-icon">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span id="cart-count">{{ cart_count }}</span>
+        </a>
+
+        {% if user.is_authenticated %}
+            <div class="dropdown user-dropdown">
+                <button class="user-btn">
+                    <i class="fa-solid fa-user"></i> {{ user.username }}
+                </button>
+                <div class="dropdown-content">
+                    <a href="{% url 'user_profile' %}">My Profile</a>
+                    <a href="{% url 'order_history' %}">My Orders</a>
+                    <a href="{% url 'wishlist' %}">My Wishlist</a>
+                    <a href="{% url 'address_book' %}">My Addresses</a>
+                    <div class="dropdown-divider"></div>
+                    <a href="{% url 'logout' %}">Logout</a>
+                </div>
+            </div>
+        {% else %}
+            <a href="{% url 'login' %}"><button class="auth-btn">Login</button></a>
+            <a href="{% url 'signup' %}"><button class="auth-btn signup-btn">Sign Up</button></a>
+        {% endif %}
+    </div>
+
+    <!-- HAMBURGER ICON -->
+    <button class="hamburger" id="nav-toggle">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+
+</nav>
+<style>
+    /* Update styles for new elements */
+    .user-btn {
+        background: white;
+        color: var(--green);
+        border: none;
+        padding: 8px 16px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-weight: 600;
+    }
+    
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+    
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background: white;
+        min-width: 200px;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        z-index: 1000;
+        border-radius: 8px;
+        padding: 8px 0;
+    }
+    
+    .dropdown-content a {
+        display: block;
+        padding: 10px 16px;
+        color: #333;
+        text-decoration: none;
+    }
+    
+    .dropdown-content a:hover {
+        background: #f5f5f5;
+    }
+    
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+    
+    .dropdown-divider {
+        height: 1px;
+        background: #eee;
+        margin: 8px 0;
+    }
+/* Mobile nav fix */
+#nav-center {
+    transition: max-height 0.3s ease;
+    overflow: hidden;
+    max-height: 0;
+}
+
+#nav-center.open {
+    max-height: 500px;
+}
+
+</style>
+
+<script src="{% static 'js/navbar.js' %}"></script>

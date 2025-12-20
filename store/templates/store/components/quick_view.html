@@ -1,0 +1,158 @@
+{% load static %}
+
+<div class="quick-view-container">
+
+    <div class="quick-view-left">
+        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="quick-view-image">
+    </div>
+
+    <div class="quick-view-right">
+        <h2 class="quick-view-title">{{ product.name }}</h2>
+
+        {% if product.short_description %}
+        <p class="quick-view-shortdesc">{{ product.short_description }}</p>
+        {% else %}
+        <p class="quick-view-shortdesc">{{ product.description|truncatechars:120 }}</p>
+        {% endif %}
+
+        <div class="quick-view-pricebox">
+            <span class="qv-price">₹{{ product.current_price }}</span>
+
+            {% if product.discount_price %}
+                <span class="qv-original">₹{{ product.price }}</span>
+                <span class="qv-discount">-{{ product.get_discount_percentage }}%</span>
+            {% endif %}
+        </div>
+
+        <div class="quick-view-stock">
+            {% if product.stock > 0 %}
+                <span class="in-stock">In Stock ({{ product.stock }} available)</span>
+            {% else %}
+                <span class="out-of-stock">Out of Stock</span>
+            {% endif %}
+        </div>
+
+        <div class="quick-view-actions">
+
+            <button class="add-btn add-to-cart"
+                data-product-id="{{ product.id }}"
+                data-product-name="{{ product.name }}"
+                data-product-price="{{ product.current_price }}"
+                data-product-image="{{ product.image.url }}">
+                Add to Cart
+            </button>
+
+            <a href="{% url 'product_detail' product.slug %}" class="view-details-btn">
+                View Full Details
+            </a>
+
+        </div>
+    </div>
+</div>
+
+<style>
+.quick-view-container {
+    display: flex;
+    gap: 16px;
+    padding: 10px;
+    max-width: 700px;
+}
+
+.quick-view-left {
+    flex: 1;
+}
+
+.quick-view-image {
+    width: 100%;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.quick-view-right {
+    flex: 1;
+}
+
+.quick-view-title {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.quick-view-shortdesc {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 12px;
+}
+
+.quick-view-pricebox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.qv-price {
+    font-size: 20px;
+    font-weight: 700;
+    color: #2e7d32;
+}
+
+.qv-original {
+    text-decoration: line-through;
+    font-size: 14px;
+    color: #777;
+}
+
+.qv-discount {
+    background: #e53935;
+    color: white;
+    padding: 2px 6px;
+    font-size: 12px;
+    border-radius: 4px;
+}
+
+.quick-view-stock {
+    margin-bottom: 15px;
+}
+
+.in-stock {
+    color: green;
+    font-weight: 600;
+}
+
+.out-of-stock {
+    color: red;
+    font-weight: 600;
+}
+
+.quick-view-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.add-btn {
+    background: #1b5e20;
+    padding: 10px 16px;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    border: none;
+    font-size: 14px;
+}
+
+.view-details-btn {
+    background: #2e7d32;
+    padding: 10px 16px;
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+@media (max-width: 600px) {
+    .quick-view-container {
+        flex-direction: column;
+    }
+}
+</style>

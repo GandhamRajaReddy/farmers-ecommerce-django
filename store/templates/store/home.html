@@ -1,0 +1,107 @@
+{% extends "store/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<!-- HERO SECTION -->
+<section class="hero">
+    <div class="hero-left">
+        <div class="hero-title">All your farming needs in one place.</div>
+        <div class="hero-sub">
+            Seeds, pesticides, tools & machines delivered to your village with trusted quality.
+        </div>
+
+        <form action="{% url 'search' %}" method="GET" class="hero-search">
+            <input type="text" name="q" placeholder="Search seeds, pesticides, tools..." required>
+            <button type="submit">Search</button>
+        </form>
+
+        <div class="hero-tags">
+            Popular: maize seeds, urea, sprayers, insecticides, weed control
+        </div>
+    </div>
+
+    <div class="hero-right">
+        <div class="mini-banner">
+            <div>
+                <div class="mini-banner-title">100% Genuine Products</div>
+                <div class="mini-banner-sub">Trusted brands recommended for farmers.</div>
+            </div>
+            <span class="mini-badge">Verified</span>
+        </div>
+
+        <div class="mini-banner">
+            <div>
+                <div class="mini-banner-title">Delivery to Rural Areas</div>
+                <div class="mini-banner-sub">We ship directly to your village / town.</div>
+            </div>
+            <span class="mini-badge">Pan India*</span>
+        </div>
+    </div>
+</section>
+
+
+<!-- CATEGORY STRIP -->
+<section>
+    <div class="category-strip">
+        {% for category in categories %}
+            <a href="{% url 'category' category.slug %}" class="category-item">
+                {% if category.image %}
+                    <img src="{{ category.image.url }}" alt="{{ category.name }}">
+                {% else %}
+                    <i class="{{ category.icon|default:'fas fa-seedling' }} fa-2x"></i>
+                {% endif %}
+                <span>{{ category.name }}</span>
+            </a>
+        {% endfor %}
+    </div>
+</section>
+
+
+<!-- FEATURED PRODUCTS -->
+<section>
+    <div class="section-header">
+        <h2>Featured Products</h2>
+        <a href="{% url 'search' %}?sort=popular">View all ›</a>
+    </div>
+
+    <div class="products-grid">
+        {% for product in featured_products %}
+            {% include "store/product_card.html" %}
+        {% empty %}
+            <p>No featured products available.</p>
+        {% endfor %}
+    </div>
+</section>
+
+
+<!-- NEW ARRIVALS -->
+<section>
+    <div class="section-header">
+        <h2>New Arrivals</h2>
+        <a href="{% url 'search' %}?sort=newest">View all ›</a>
+    </div>
+
+    <div class="products-grid">
+        {% for product in new_products %}
+            {% include "store/product_card.html" %}
+        {% endfor %}
+    </div>
+</section>
+
+
+<!-- SPECIAL OFFERS -->
+<section>
+    <div class="section-header">
+        <h2>Special Offers</h2>
+        <a href="{% url 'search' %}?on_sale=true">View all ›</a>
+    </div>
+
+    <div class="products-grid">
+        {% for product in sale_products %}
+            {% include "store/product_card.html" %}
+        {% endfor %}
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,46 @@
+<div class="product-card"
+     data-id="{{ product.id }}"
+     data-name="{{ product.name }}"
+     data-price="{{ product.current_price }}">
+
+    <div class="product-img-wrapper">
+        <a href="{% url 'product_detail' product.slug %}">
+            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+        </a>
+    </div>
+
+    <div class="product-name">
+        <a href="{% url 'product_detail' product.slug %}">
+            {{ product.name|truncatechars:30 }}
+        </a>
+    </div>
+
+    <div class="product-desc">
+        {{ product.short_description|default:product.description|truncatechars:60 }}
+    </div>
+
+    <div class="product-bottom-row">
+        <div class="product-price">
+            ₹{{ product.current_price }}
+            {% if product.discount_price %}
+                <span class="original-price">₹{{ product.price }}</span>
+                <span class="discount-badge">-{{ product.get_discount_percentage }}%</span>
+            {% endif %}
+        </div>
+
+        <div class="product-actions">
+            <button class="add-btn add-to-cart"
+                data-product-id="{{ product.id }}"
+                data-product-name="{{ product.name|escapejs }}"
+                data-product-price="{{ product.current_price }}"
+                data-product-image="{{ product.image.url }}">
+                Add to Cart
+            </button>
+
+            <button class="btn-quick-view" data-product-id="{{ product.id }}">
+                Quick View
+            </button>
+        </div>
+    </div>
+
+</div>

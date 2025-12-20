@@ -1,0 +1,105 @@
+{% extends "store/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="container category-page">
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+        <a href="{% url 'home' %}">Home</a>
+
+        {% if category %}
+            &raquo; <span>{{ category.name }}</span>
+        {% endif %}
+
+        {% if subcategory %}
+            &raquo; <span>{{ subcategory.name }}</span>
+        {% endif %}
+    </nav>
+
+    <!-- Title + Sorting -->
+    <div class="category-header">
+        <h2>
+            {% if subcategory %}
+                {{ subcategory.name }}
+            {% else %}
+                {{ category.name }}
+            {% endif %}
+        </h2>
+
+        <form method="GET" class="sort-box">
+            <select name="sort" onchange="this.form.submit()">
+                <option value="newest" {% if sort_by == 'newest' %}selected{% endif %}>Newest</option>
+                <option value="price_low" {% if sort_by == 'price_low' %}selected{% endif %}>Price: Low to High</option>
+                <option value="price_high" {% if sort_by == 'price_high' %}selected{% endif %}>Price: High to Low</option>
+                <option value="name" {% if sort_by == 'name' %}selected{% endif %}>Name (A–Z)</option>
+                <option value="popular" {% if sort_by == 'popular' %}selected{% endif %}>Most Popular</option>
+            </select>
+        </form>
+    </div>
+
+    <!-- PRODUCT GRID -->
+    <div class="products-grid">
+        {% for product in products %}
+            {% include "store/components/product_card.html" %}
+        {% empty %}
+            <p class="no-products">No products found in this category.</p>
+        {% endfor %}
+    </div>
+
+    <!-- PAGINATION -->
+    {% if is_paginated %}
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}&sort={{ sort_by }}">Previous</a>
+        {% endif %}
+
+        <span class="page-number">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}&sort={{ sort_by }}">Next</a>
+        {% endif %}
+    </div>
+    {% endif %}
+
+</div>
+
+<style>
+.category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.sort-box select {
+    padding: 8px 14px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+.breadcrumb {
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+.breadcrumb a {
+    color: #2e7d32;
+    text-decoration: none;
+}
+.pagination {
+    text-align: center;
+    margin: 30px 0;
+}
+.pagination a {
+    padding: 8px 14px;
+    margin: 5px;
+    background: #2e7d32;
+    color: #fff;
+    border-radius: 4px;
+    text-decoration: none;
+}
+.page-number {
+    margin: 0 10px;
+}
+</style>
+
+{% endblock %}

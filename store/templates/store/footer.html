@@ -1,0 +1,294 @@
+<!-- templates/store/footer.html -->
+<footer class="footer">
+    <div class="footer-main">
+        <div class="container">
+            <div class="footer-grid">
+                <!-- Company Info -->
+                <div class="footer-section">
+                    <h3 class="footer-logo">
+                        <i class="fas fa-tractor"></i> AgriMart
+                    </h3>
+                    <p class="footer-description">
+                        Empowering farmers with quality seeds, pesticides, tools, 
+                        and machinery. Your one-stop shop for all farming needs.
+                    </p>
+                    <div class="social-links">
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="{% url 'home' %}">Home</a></li>
+                        <li><a href="{% url 'category' 'seeds' %}">Seeds</a></li>
+                        <li><a href="{% url 'category' 'pesticides' %}">Pesticides</a></li>
+                        <li><a href="{% url 'category' 'tools' %}">Tools</a></li>
+                        <li><a href="{% url 'category' 'machines' %}">Machines</a></li>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                    </ul>
+                </div>
+
+                <!-- Categories -->
+                <div class="footer-section">
+                    <h4>Categories</h4>
+                    <ul class="footer-links">
+                        {% for category in categories|slice:":6" %}
+                        <li><a href="{% url 'category' category.slug %}">{{ category.name }}</a></li>
+                        {% endfor %}
+                        <li><a href="{% url 'home' %}">View All Categories</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact Info -->
+                <div class="footer-section">
+                    <h4>Contact Us</h4>
+                    <ul class="contact-info">
+                        <li>
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>123 Farm Street, Agri City, IN 560001</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-phone"></i>
+                            <span>+91 98765 43210</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-envelope"></i>
+                            <span>support@agrimart.com</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-clock"></i>
+                            <span>Mon-Sat: 8:00 AM - 8:00 PM</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Methods -->
+    <div class="payment-methods">
+        <div class="container">
+            <h5>We Accept:</h5>
+            <div class="payment-icons">
+                <i class="fab fa-cc-visa"></i>
+                <i class="fab fa-cc-mastercard"></i>
+                <i class="fab fa-cc-amex"></i>
+                <i class="fab fa-cc-paypal"></i>
+                <i class="fas fa-university"></i>
+                <i class="fab fa-google-pay"></i>
+                <i class="fab fa-apple-pay"></i>
+                <i class="fas fa-money-bill-wave"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Footer -->
+    <div class="footer-bottom">
+        <div class="container">
+            <div class="bottom-content">
+                <p class="copyright">
+                    © {% now "Y" %} AgriMart. All rights reserved.
+                </p>
+                <div class="legal-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Shipping Policy</a>
+                    <a href="#">Return Policy</a>
+                    <a href="#">FAQ</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<style>
+    .footer {
+        background: #1b5e20;
+        color: white;
+        margin-top: auto;
+    }
+    
+    .footer-main {
+        padding: 50px 0 30px;
+    }
+    
+    .footer-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 40px;
+    }
+    
+    .footer-section h4 {
+        color: white;
+        margin-bottom: 20px;
+        font-size: 18px;
+        position: relative;
+        padding-bottom: 10px;
+    }
+    
+    .footer-section h4::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 40px;
+        height: 2px;
+        background: #4caf50;
+    }
+    
+    .footer-logo {
+        font-size: 24px;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .footer-description {
+        line-height: 1.6;
+        margin-bottom: 20px;
+        opacity: 0.9;
+    }
+    
+    .social-links {
+        display: flex;
+        gap: 15px;
+    }
+    
+    .social-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    
+    .social-icon:hover {
+        background: #4caf50;
+        transform: translateY(-3px);
+    }
+    
+    .footer-links {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .footer-links li {
+        margin-bottom: 10px;
+    }
+    
+    .footer-links a {
+        color: rgba(255,255,255,0.9);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+    }
+    
+    .footer-links a:hover {
+        color: #4caf50;
+        transform: translateX(5px);
+    }
+    
+    .contact-info {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .contact-info li {
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+        margin-bottom: 15px;
+    }
+    
+    .contact-info i {
+        color: #4caf50;
+        margin-top: 3px;
+    }
+    
+    .payment-methods {
+        background: rgba(0,0,0,0.1);
+        padding: 20px 0;
+        border-top: 1px solid rgba(255,255,255,0.1);
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .payment-methods .container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    
+    .payment-methods h5 {
+        margin: 0;
+        font-size: 14px;
+        opacity: 0.8;
+    }
+    
+    .payment-icons {
+        display: flex;
+        gap: 20px;
+        font-size: 24px;
+    }
+    
+    .footer-bottom {
+        padding: 20px 0;
+        background: #0d4010;
+    }
+    
+    .bottom-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+    
+    .copyright {
+        margin: 0;
+        font-size: 14px;
+        opacity: 0.8;
+    }
+    
+    .legal-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+    
+    .legal-links a {
+        color: rgba(255,255,255,0.8);
+        text-decoration: none;
+        font-size: 14px;
+        transition: all 0.3s ease;
+    }
+    
+    .legal-links a:hover {
+        color: #4caf50;
+    }
+</style>

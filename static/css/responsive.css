@@ -1,0 +1,39 @@
+/* responsive.css - basic responsive utilities for AgriMart */
+/* ============================================================
+   NAVBAR — MOBILE VERSION ONLY
+============================================================ */
+@media (max-width: 768px) {
+
+    .nav-center {
+        display: none;              /* hidden until opened */
+        flex-direction: column;
+        width: 100%;
+        background: white;
+        padding: 15px;
+        border-top: 1px solid #eee;
+    }
+
+    .nav-center.open {
+        display: flex;             /* visible when toggled */
+    }
+
+    .hamburger {
+        display: block;            /* show menu button */
+    }
+}
+@media (max-width: 900px) {
+  .product-container { flex-direction: column; gap:18px; }
+  .product-page { width:95%; }
+  .products-grid, .product-grid { padding: 0 12px; }
+  .category-card, .product-card, .related-card { width: 100% !important; }
+  .thumbnails img { width:70px;height:70px; }
+  .navbar { padding:12px; }
+}
+@media (max-width:480px){
+  .product-details h1{ font-size:20px; }
+  .price{ font-size:20px; }
+  .product-image img{ border-radius:8px; }
+  .actions { flex-direction:column; gap:12px; }
+}
+.form-control{ padding:10px; border-radius:6px; border:1px solid #ddd; }
+.btn{ padding:10px 14px; border-radius:6px; text-decoration:none; display:inline-block; }

@@ -1,0 +1,73 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Farmer E-Commerce | Products</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+
+<header>
+    <h2>Farmer E-Market</h2>
+    <nav>
+        <a href="#">Home</a>
+        <a href="#">Seeds</a>
+        <a href="#">Pesticides</a>
+        <a href="#">Tools</a>
+        <a href="/accounts/login/">Login</a>
+        <a href="/cart/">Cart</a>
+    </nav>
+</header>
+
+<div class="container">
+    <h2>All Products</h2>
+
+  <div class="products-grid">
+  {% for product in products %}
+    <div class="product-card" data-id="{{ product.id }}" data-name="{{ product.name }}" data-price="{{ product.current_price }}">
+      <div class="product-img-wrapper">
+        <a href="{% url 'product_detail' product.slug %}">
+          <img src="{{ product.image.url }}" alt="{{ product.name }}">
+        </a>
+      </div>
+
+      <div class="product-info">
+        <h3 class="product-name">
+          <a href="{% url 'product_detail' product.slug %}">{{ product.name|truncatechars:40 }}</a>
+        </h3>
+
+        <p class="product-desc">{{ product.short_description|default:product.description|truncatechars:80 }}</p>
+
+        <div class="product-bottom-row">
+          <div class="product-price">
+            ₹{{ product.current_price }}
+            {% if product.discount_price %}
+              <span class="original-price">₹{{ product.price }}</span>
+              <span class="discount-badge">-{{ product.get_discount_percentage }}%</span>
+            {% endif %}
+          </div>
+
+          <div class="product-actions">
+            <button class="add-btn add-to-cart"
+                data-product-id="{{ product.id }}"
+                data-product-name="{{ product.name|escapejs }}"
+                data-product-price="{{ product.current_price }}"
+                data-product-image="{{ product.image.url }}">
+              Add to Cart
+            </button>
+
+            <button class="btn-quick-view" data-product-id="{{ product.id }}">Quick View</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% empty %}
+    <p class="no-products">No products found.</p>
+  {% endfor %}
+</div>
+
+</div>
+
+</body>
+</html>
