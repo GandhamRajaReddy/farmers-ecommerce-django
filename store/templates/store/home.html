@@ -67,7 +67,7 @@
 
     <div class="products-grid">
         {% for product in featured_products %}
-            {% include "store/product_card.html" %}
+            {% include "store/components/product_card.html" %}
         {% empty %}
             <p>No featured products available.</p>
         {% endfor %}
@@ -84,7 +84,7 @@
 
     <div class="products-grid">
         {% for product in new_products %}
-            {% include "store/product_card.html" %}
+            {% include "store/components/product_card.html" %}
         {% endfor %}
     </div>
 </section>
@@ -99,7 +99,7 @@
 
     <div class="products-grid">
         {% for product in sale_products %}
-            {% include "store/product_card.html" %}
+            {% include "store/components/product_card.html" %}
         {% endfor %}
     </div>
 </section>

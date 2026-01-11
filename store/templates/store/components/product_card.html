@@ -28,7 +28,7 @@
             {% endif %}
         </div>
 
-        <div class="product-actions">
+      <div class="product-actions product-actions--stack">
             <button class="add-btn add-to-cart"
                 data-product-id="{{ product.id }}"
                 data-product-name="{{ product.name|escapejs }}"
@@ -36,6 +36,8 @@
                 data-product-image="{{ product.image.url }}">
                 Add to Cart
             </button>
+            <button class="wishlist-btn" data-product-id="{{ product.id }}"> <i class="fa-solid fa-heart"></i> Wishlist</button>
+
 
             <button class="btn-quick-view" data-product-id="{{ product.id }}">
                 Quick View

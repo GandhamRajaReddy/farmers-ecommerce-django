@@ -14,6 +14,9 @@ import uuid
 from .models import *
 from .forms import *
 from .utils import get_cart, get_cart_count
+from decimal import Decimal
+
+
 def seeds(request):
     products = Product.objects.filter(category__name__iexact="Seeds")
     return render(request, "store/seeds.html", {"products": products})
@@ -200,16 +203,14 @@ def cart_page(request):
     cart = get_cart(request)
     cart_items = cart.items.select_related('product').all()
     
-    # Calculate subtotal
-    subtotal = sum(item.get_total_price() for item in cart_items)
-    
-    # Default shipping
-    shipping = 40 if subtotal < 500 else 0
-    
-    # Tax (example: 5% GST)
-    tax = subtotal * 0.05
-    
+    subtotal = sum((item.get_total_price() for item in cart_items), Decimal('0.00'))
+
+    shipping = Decimal('40.00') if subtotal < Decimal('500.00') else Decimal('0.00')
+
+    tax = subtotal * Decimal('0.05')
+
     total = subtotal + shipping + tax
+
     
     context = {
         'cart': cart,
@@ -298,7 +299,8 @@ def update_cart_item(request):
         
         # Recalculate cart totals
         cart_items = cart.items.all()
-        subtotal = sum(item.get_total_price() for item in cart_items)
+        subtotal = sum((item.get_total_price() for item in cart_items), Decimal('0.00'))
+
         cart_count = cart.get_total_items()
         
         return JsonResponse({
@@ -327,7 +329,8 @@ def remove_from_cart(request):
         
         # Recalculate cart totals
         cart_items = cart.items.all()
-        subtotal = sum(item.get_total_price() for item in cart_items)
+        subtotal = sum((item.get_total_price() for item in cart_items), Decimal('0.00'))
+
         cart_count = cart.get_total_items()
         
         return JsonResponse({
@@ -353,7 +356,7 @@ def clear_cart(request):
             'success': True,
             'message': 'Cart cleared',
             'cart_count': 0,
-            'subtotal': 0,
+            'subtotal': 0.0,
         })
     
     except Exception as e:
@@ -379,10 +382,14 @@ def checkout(request):
             return redirect('cart')
     
     # Calculate totals
-    subtotal = sum(item.get_total_price() for item in cart_items)
-    shipping = 40 if subtotal < 500 else 0
-    tax = subtotal * 0.05  # 5% GST
+    subtotal = sum((item.get_total_price() for item in cart_items), Decimal('0.00'))
+
+    shipping = Decimal('40.00') if subtotal < Decimal('500.00') else Decimal('0.00')
+
+    tax = subtotal * Decimal('0.05')
+
     total = subtotal + shipping + tax
+
     
     # Get user addresses
     addresses = ShippingAddress.objects.filter(user=request.user)

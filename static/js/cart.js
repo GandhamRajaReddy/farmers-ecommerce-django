@@ -308,3 +308,31 @@
     clear: clearCart,
   };
 })();
+document.addEventListener("click", function (e) {
+    if (e.target.classList.contains("add-to-cart")) {
+
+        const productId = e.target.dataset.productId;
+
+        fetch("/cart/add/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": window.csrfToken
+            },
+            body: JSON.stringify({
+                product_id: productId,
+                quantity: 1
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                document.querySelectorAll("#cart-count")
+                    .forEach(el => el.innerText = data.cart_count);
+            } else {
+                alert(data.error);
+            }
+        });
+    }
+});
+

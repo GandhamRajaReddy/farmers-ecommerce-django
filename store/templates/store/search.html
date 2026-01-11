@@ -33,56 +33,13 @@ body {
     margin-bottom:20px;
 }
 
-/* GRID (3 per row) */
+/* GRID */
 .products-grid {
     width:90%;
     margin:0 auto 40px;
     display:grid;
     grid-template-columns:repeat(3, 1fr);
     gap:25px;
-}
-
-/* PRODUCT CARD */
-.product-card {
-    background:white;
-    border-radius:12px;
-    padding:15px;
-    box-shadow:0 3px 10px rgba(0,0,0,0.15);
-    transition:0.3s;
-    text-align:center;
-}
-.product-card:hover {
-    transform:translateY(-5px);
-}
-
-.product-card img {
-    width:100%;
-    height:180px;
-    border-radius:10px;
-    object-fit:cover;
-}
-
-.product-card h3 {
-    margin:10px 0;
-    font-size:18px;
-    font-weight:700;
-}
-
-.product-card p {
-    font-size:14px;
-    color:#666;
-    margin-bottom:10px;
-}
-
-.product-card button {
-    width:100%;
-    padding:10px;
-    background:#2e7d32;
-    color:white;
-    border:none;
-    border-radius:6px;
-    font-weight:bold;
-    cursor:pointer;
 }
 
 /* EMPTY RESULTS */
@@ -113,25 +70,40 @@ body {
 <h2 class="search-title">Search Results</h2>
 
 {% if query %}
-<p class="search-sub">Showing results for: <strong>{{ query }}</strong></p>
+<p class="search-sub">
+    Showing results for: <strong>{{ query }}</strong>
+    ({{ total_results }} items)
+</p>
 {% endif %}
 
 {% if products %}
 <div class="products-grid">
 
-    {% for item in products %}
-    <div class="product-card">
-        <img src="{{ item.image }}">
-        <h3>{{ item.name }}</h3>
-        <p>{{ item.description }}</p>
-        <button>Add to Cart</button>
-    </div>
+    {% for product in products %}
+        {% include "store/components/product_card.html" with product=product %}
     {% endfor %}
 
 </div>
 
+<!-- PAGINATION -->
+<div style="text-align:center; margin-bottom:40px;">
+    {% if products.has_previous %}
+        <a href="?q={{ query }}&page={{ products.previous_page_number }}">⬅ Previous</a>
+    {% endif %}
+
+    <span style="margin:0 10px;">
+        Page {{ products.number }} of {{ products.paginator.num_pages }}
+    </span>
+
+    {% if products.has_next %}
+        <a href="?q={{ query }}&page={{ products.next_page_number }}">Next ➡</a>
+    {% endif %}
+</div>
+
 {% else %}
-<h3 class="no-results">No products found for "{{ query }}".</h3>
+<h3 class="no-results">
+    No products found for "{{ query }}".
+</h3>
 {% endif %}
 
 </body>

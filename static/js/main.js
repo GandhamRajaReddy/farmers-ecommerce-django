@@ -127,3 +127,26 @@ document.addEventListener("click", function (e) {
 document.addEventListener("DOMContentLoaded", function () {
     // placeholder for future improvements
 });
+document.addEventListener("click", function(e) {
+    if (e.target.classList.contains("wishlist-btn")) {
+        const productId = e.target.dataset.productId;
+
+        fetch("/wishlist/add/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": window.csrfToken
+            },
+            body: JSON.stringify({ product_id: productId })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                alert("Added to wishlist");
+            } else {
+                alert(data.error);
+            }
+        });
+    }
+});
+

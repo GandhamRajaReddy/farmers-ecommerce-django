@@ -19,7 +19,8 @@ class ProductAdmin(admin.ModelAdmin):
     list_display = ['name', 'category', 'price', 'stock', 'is_available', 'is_featured', 'rating']
     list_filter = ['category', 'is_available', 'is_featured', 'is_on_sale', 'product_type']
     search_fields = ['name', 'description', 'sku']
-    readonly_fields = ['sku', 'rating', 'total_reviews']
+    readonly_fields = ['sku', 'rating', 'total_reviews','created_at',
+        'updated_at']
     inlines = [ProductImageInline]
     fieldsets = (
         ('Basic Information', {
@@ -46,9 +47,9 @@ class ProductAdmin(admin.ModelAdmin):
         ('Images', {
             'fields': ('image', 'image_2', 'image_3')
         }),
-        ('Dates', {
-            'fields': ('created_at', 'updated_at')
-        }),
+        # ('Dates', {
+        #     'fields': ('created_at', 'updated_at')
+        # }),
     )
 
 class OrderItemInline(admin.TabularInline):

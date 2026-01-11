@@ -30,24 +30,24 @@
                     
                     <div class="thumbnail-images">
                         <div class="thumbnail {% if forloop.first %}active{% endif %}" 
-                             onclick="changeMainImage('{{ product.image.url }}')">
+                             onclick="changeMainImage('{{ product.image.url }}', this)">
                             <img src="{{ product.image.url }}" alt="Main Image">
                         </div>
                         
                         {% if product.image_2 %}
-                        <div class="thumbnail" onclick="changeMainImage('{{ product.image_2.url }}')">
+                        <div class="thumbnail" onclick="changeMainImage('{{ product.image_2.url }}', this)">
                             <img src="{{ product.image_2.url }}" alt="Image 2">
                         </div>
                         {% endif %}
                         
                         {% if product.image_3 %}
-                        <div class="thumbnail" onclick="changeMainImage('{{ product.image_3.url }}')">
+                        <div class="thumbnail" onclick="changeMainImage('{{ product.image_3.url }}', this)">
                             <img src="{{ product.image_3.url }}" alt="Image 3">
                         </div>
                         {% endif %}
                         
                         {% for image in product.images.all %}
-                        <div class="thumbnail" onclick="changeMainImage('{{ image.image.url }}')">
+                        <div class="thumbnail" onclick="changeMainImage('{{ image.image.url }}', this)">
                             <img src="{{ image.image.url }}" alt="{{ image.alt_text }}">
                         </div>
                         {% endfor %}
@@ -639,16 +639,62 @@
         font-weight: bold;
         font-size: 18px;
     }
+    /* ============================================================
+   PRODUCT DETAIL – MOBILE FIX
+============================================================ */
+@media (max-width: 768px) {
+
+    .product-row {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .main-image {
+        height: 280px;
+    }
+
+    .thumbnail {
+        width: 64px;
+        height: 64px;
+    }
+
+    .product-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .btn-add-to-cart,
+    .btn-buy-now,
+    .btn-wishlist {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .tabs-header {
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .tab-link {
+        padding: 12px 18px;
+        font-size: 14px;
+    }
+}
+
 </style>
 
 <script>
-function changeMainImage(imageUrl) {
+function changeMainImage(imageUrl, el) {
     document.getElementById('mainProductImage').src = imageUrl;
-    document.querySelectorAll('.thumbnail').forEach(thumb => {
-        thumb.classList.remove('active');
-    });
-    event.currentTarget.classList.add('active');
+    document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
 }
+
 
 // Tab switching
 document.querySelectorAll('.tab-link').forEach(link => {
@@ -696,26 +742,24 @@ document.querySelector('.btn-buy-now').addEventListener('click', function() {
 });
 
 // Wishlist
-document.querySelector('.btn-wishlist').addEventListener('click', function() {
-    const productId = this.dataset.productId;
-    
-    fetch('/wishlist/add/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrfToken
-        },
-        body: JSON.stringify({ product_id: productId })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert('Added to wishlist!');
-        } else {
-            alert(data.error);
-        }
+const wishlistBtn = document.querySelector('.btn-wishlist');
+if (wishlistBtn) {
+    wishlistBtn.addEventListener('click', function() {
+        const productId = this.dataset.productId;
+
+        fetch('/wishlist/add/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken
+            },
+            body: JSON.stringify({ product_id: productId })
+        })
+        .then(res => res.json())
+        .then(data => alert(data.success ? 'Added to wishlist!' : data.error));
     });
-});
+}
+
 
 // Review modal
 const reviewModal = document.getElementById('reviewModal');
