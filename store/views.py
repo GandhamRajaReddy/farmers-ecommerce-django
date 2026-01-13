@@ -134,7 +134,8 @@ class ProductDetailView(DetailView):
         ).exclude(id=product.id)[:4]
         
         # Get product reviews
-        reviews = product.reviews.all().order_by('-created_at')[:5]
+        reviews = product.reviews.select_related("user").order_by("-created_at")[:5]
+
         
         # Get average rating
         avg_rating = product.reviews.aggregate(Avg('rating'))['rating__avg'] or 0
@@ -157,13 +158,16 @@ def search(request):
     products = Product.objects.filter(is_available=True)
     
     if query:
-        products = products.filter(
-            Q(name__icontains=query) |
-            Q(description__icontains=query) |
-            Q(short_description__icontains=query) |
-            Q(category__name__icontains=query) |
-            Q(brand__icontains=query)
-        )
+      products = products.filter(
+         Q(name__icontains=query) |
+         Q(description__icontains=query) |
+         Q(short_description__icontains=query) |
+         Q(category__name__icontains=query) |
+         Q(subcategory__name__icontains=query) |
+         Q(product_type__icontains=query) |
+         Q(brand__icontains=query)
+         )
+
     
     if category_filter:
         products = products.filter(category__slug=category_filter)
@@ -173,9 +177,15 @@ def search(request):
     
     if max_price:
         products = products.filter(price__lte=max_price)
+    on_sale = request.GET.get("on_sale")
+
+    if on_sale == "true":
+       products = products.filter(is_on_sale=True)
+    
     
     # Sorting
     sort_by = request.GET.get('sort', 'relevance')
+
     if sort_by == 'price_low':
         products = products.order_by('price')
     elif sort_by == 'price_high':
@@ -183,19 +193,26 @@ def search(request):
     elif sort_by == 'newest':
         products = products.order_by('-created_at')
     elif sort_by == 'popular':
-        products = products.order_by('-rating')
-    
+        products = products.annotate(
+        review_count=Count('reviews')
+        ).order_by("-review_count", "-rating")
+
+
     # Pagination
     paginator = Paginator(products, 12)
     page = request.GET.get('page', 1)
     products_page = paginator.get_page(page)
     
     context = {
-        'products': products_page,
-        'query': query,
-        'categories': Category.objects.filter(is_active=True),
-        'total_results': products.count(),
+    "products": products_page,
+    "query": query,
+    "total_results": products.count(),
+    "categories": Category.objects.filter(is_active=True),
+    "is_search": bool(query),
+    "is_view_all": not bool(query),
     }
+
+
     return render(request, 'store/search.html', context)
 
 # Cart views
@@ -614,10 +631,7 @@ def add_review(request, product_id):
             review.is_verified_purchase = has_purchased
             review.save()
             
-            # Update product rating
-            product.rating = product.get_average_rating()
-            product.save()
-            
+          
             messages.success(request, 'Review submitted successfully')
             return redirect('product_detail', slug=product.slug)
     else:

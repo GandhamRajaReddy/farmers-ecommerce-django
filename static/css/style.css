@@ -677,6 +677,12 @@ a {
     cursor: pointer;
     transition: var(--transition);
 }
+.product-card img {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
 
 /* Primary */
 .btn-add-cart {

@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.text import slugify
 import uuid
+from decimal import Decimal
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -131,18 +132,20 @@ class Product(models.Model):
     
     @property
     def current_price(self):
-        return self.discount_price if self.discount_price else self.price
+        return self.discount_price or self.price
+    
+    def update_rating(self):
+         qs = self.reviews.all()
+         self.total_reviews = qs.count()
+         self.rating = qs.aggregate(models.Avg("rating"))["rating__avg"] or 0
+         self.save(update_fields=["rating", "total_reviews"])
+
     
     @property
     def in_stock(self):
         return self.stock > 0
     
-    def get_average_rating(self):
-        reviews = self.reviews.all()
-        if reviews:
-            return sum(review.rating for review in reviews) / len(reviews)
-        return 0
-
+  
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
     image = models.ImageField(upload_to='product_images/')
@@ -174,13 +177,13 @@ class Cart(models.Model):
         return sum(item.quantity for item in self.items.all())
     
     def get_total_price(self):
-        total = 0
+        
+        total = Decimal("0.00")
         for item in self.items.all():
-            if item.product.discount_price:
-                total += item.quantity * item.product.discount_price
-            else:
-                total += item.quantity * item.product.price
-        return total
+            price = item.product.discount_price or item.product.price
+            total += price * item.quantity
+        return total        
+
     
     def get_subtotal(self):
         return self.get_total_price()
@@ -201,9 +204,11 @@ class CartItem(models.Model):
         return f"{self.quantity} x {self.product.name}"
     
     def get_total_price(self):
-        if self.product.discount_price:
-            return self.quantity * self.product.discount_price
-        return self.quantity * self.product.price
+       price = self.product.discount_price or self.product.price
+       return price * self.quantity
+
+
+        
     
     def save(self, *args, **kwargs):
         # Ensure quantity doesn't exceed available stock
@@ -282,7 +287,9 @@ class Order(models.Model):
     
     def save(self, *args, **kwargs):
         if not self.order_number:
-            self.order_number = f"ORD{self.created_at.strftime('%Y%m%d')}{uuid.uuid4().hex[:6].upper()}"
+            today = timezone.now().strftime("%Y%m%d")
+            self.order_number = f"ORD{today}{uuid.uuid4().hex[:6].upper()}"
+
         if not self.billing_address:
             self.billing_address = self.shipping_address
             self.billing_city = self.shipping_city
@@ -330,6 +337,9 @@ class ProductReview(models.Model):
     
     def __str__(self):
         return f"{self.user.username} - {self.product.name} ({self.rating} stars)"
+    def save(self, *args, **kwargs):
+       super().save(*args, **kwargs)
+       self.product.update_rating()
 
 class Wishlist(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='wishlist')
